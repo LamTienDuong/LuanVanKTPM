@@ -13,9 +13,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import vn.hoidanit.jobhunter.domain.User;
-import vn.hoidanit.jobhunter.domain.dto.LoginDTO;
+import vn.hoidanit.jobhunter.domain.dto.ReqLoginDTO;
 import vn.hoidanit.jobhunter.domain.dto.ResLoginDTO;
-import vn.hoidanit.jobhunter.domain.dto.ResUserDTO;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
 import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
@@ -38,10 +37,10 @@ public class AuthController {
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO reqLoginDTO) {
         //Nạp input gồm username/password vào Security
         UsernamePasswordAuthenticationToken authenticationToken
-                = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword());
+                = new UsernamePasswordAuthenticationToken(reqLoginDTO.getUsername(), reqLoginDTO.getPassword());
         //xác thực người dùng => cần viết hàm loadUserByUsername
         Authentication authentication =
                 authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -50,7 +49,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         ResLoginDTO res = new ResLoginDTO();
-        User currentUserDB = this.userService.handleGetUserByUsername(loginDTO.getUsername());
+        User currentUserDB = this.userService.handleGetUserByUsername(reqLoginDTO.getUsername());
         if (currentUserDB != null) {
             ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                     currentUserDB.getId(),
@@ -63,10 +62,10 @@ public class AuthController {
         res.setAccess_token(access_token);
 
         // create a refresh token
-        String refresh_token = this.securityUtil.createRefreshToken(loginDTO.getUsername(), res);
+        String refresh_token = this.securityUtil.createRefreshToken(reqLoginDTO.getUsername(), res);
 
         // update user
-        this.userService.updateUserToken(refresh_token, loginDTO.getUsername());
+        this.userService.updateUserToken(refresh_token, reqLoginDTO.getUsername());
 
         // set cookie
         ResponseCookie resCookies = ResponseCookie
