@@ -1,43 +1,48 @@
 package vn.hoidanit.jobhunter.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jdk.jfr.Enabled;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
-import vn.hoidanit.jobhunter.util.constant.GenderEnum;
+import vn.hoidanit.jobhunter.util.constant.LevelEnum;
 
 import java.time.Instant;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "jobs")
+public class Job {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotBlank(message = "name khong duoc de trong")
     private String name;
-    @NotBlank(message = "email khong duoc de trong")
-    private String email;
-    @NotBlank(message = "password khong duoc de trong")
-    private String password;
-    private int age;
+    @NotBlank(message = "location khong duoc de trong")
+    private String location;
+    private double salary;
+    private int quantity;
     @Enumerated(EnumType.STRING)
-    private GenderEnum gender;// MALE/FEMALE
-    private String address;
+    private LevelEnum level;
     @Column(columnDefinition = "MEDIUMTEXT")
-    private String refreshToken;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
+    private String description;
+    private Instant startDate;
+    private Instant endDate;
+    private boolean active;
     private Instant createdAt;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+//    skills Array
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "jobs" })
+    @JoinTable(name = "job_skill", joinColumns = @JoinColumn(name = "job_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    private List<Skill> skills;
+    @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Resume> resumes;
 
@@ -57,52 +62,68 @@ public class User {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
+    public String getLocation() {
+        return location;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    public String getPassword() {
-        return password;
+    public double getSalary() {
+        return salary;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setSalary(double salary) {
+        this.salary = salary;
     }
 
-    public int getAge() {
-        return age;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
-    public GenderEnum getGender() {
-        return gender;
+    public LevelEnum getLevel() {
+        return level;
     }
 
-    public void setGender(GenderEnum gender) {
-        this.gender = gender;
+    public void setLevel(LevelEnum level) {
+        this.level = level;
     }
 
-    public String getAddress() {
-        return address;
+    public String getDescription() {
+        return description;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getRefreshToken() {
-        return refreshToken;
+    public Instant getStartDate() {
+        return startDate;
     }
 
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
+    public void setStartDate(Instant startDate) {
+        this.startDate = startDate;
+    }
+
+    public Instant getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Instant endDate) {
+        this.endDate = endDate;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public Instant getCreatedAt() {
@@ -145,6 +166,14 @@ public class User {
         this.company = company;
     }
 
+    public List<Skill> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<Skill> skills) {
+        this.skills = skills;
+    }
+
     public List<Resume> getResumes() {
         return resumes;
     }
@@ -156,7 +185,7 @@ public class User {
     @PrePersist
     public void handleBeforeCreate() {
         this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() ?
-            SecurityUtil.getCurrentUserLogin().get() : "";
+                SecurityUtil.getCurrentUserLogin().get() : "";
         this.createdAt = Instant.now();
     }
 
@@ -166,4 +195,5 @@ public class User {
                 SecurityUtil.getCurrentUserLogin().get() : "";
         this.updatedAt = Instant.now();
     }
+
 }

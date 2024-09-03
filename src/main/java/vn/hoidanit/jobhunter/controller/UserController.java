@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import vn.hoidanit.jobhunter.domain.User;
+import vn.hoidanit.jobhunter.domain.response.ResUpdateUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.domain.response.ResCreateUserDTO;
@@ -46,12 +47,12 @@ public class UserController {
 
     @PutMapping("users")
     @ApiMessage("Update a user")
-    public ResponseEntity<ResUserDTO> updateUser(@RequestBody User user) throws IdInvalidException {
+    public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody User user) throws IdInvalidException {
         User updateUser = this.userService.handleUpdateUser(user);
         if (updateUser == null) {
             throw new IdInvalidException("User voi id = " + user.getId() + " khong ton tai");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(this.userService.convertToResUserDTO(updateUser));
+        return ResponseEntity.status(HttpStatus.OK).body(this.userService.convertToResUpdateUserDTO(updateUser));
     }
 
 
@@ -62,8 +63,7 @@ public class UserController {
         if (user == null) {
             throw new IdInvalidException("User voi id = " + id + " khong ton tai");
         }
-        ResUserDTO resUserDTO = new ResUserDTO(user);
-        return ResponseEntity.status(HttpStatus.OK).body(resUserDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(this.userService.convertToResUserDTO(user));
     }
 
     @GetMapping("users")
