@@ -17,8 +17,8 @@ public class ResUserDTO {
     private Instant createdAt;
 //    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
     private Instant updatedAt;
-
     private CompanyUser company;
+    private RoleUser role;
 
     public static class CompanyUser {
         private long id;
@@ -49,20 +49,30 @@ public class ResUserDTO {
         }
     }
 
+    public static class RoleUser {
+        private long id;
+        private String name;
+
+        public long getId() {
+            return id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
     public ResUserDTO() {
     }
 
-    public ResUserDTO(long id, String name, String email, GenderEnum gender, String address, int age, Instant createdAt, Instant updatedAt, CompanyUser company) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.gender = gender;
-        this.address = address;
-        this.age = age;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.company = company;
-    }
 
     public long getId() {
         return id;
@@ -134,5 +144,13 @@ public class ResUserDTO {
 
     public void setCompany(CompanyUser company) {
         this.company = company;
+    }
+
+    public RoleUser getRole() {
+        return role;
+    }
+
+    public void setRole(RoleUser role) {
+        this.role = role;
     }
 }

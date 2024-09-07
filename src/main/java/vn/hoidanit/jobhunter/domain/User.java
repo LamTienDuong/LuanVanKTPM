@@ -40,6 +40,9 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Resume> resumes;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     public long getId() {
         return id;
@@ -151,6 +154,14 @@ public class User {
 
     public void setResumes(List<Resume> resumes) {
         this.resumes = resumes;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @PrePersist

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.hoidanit.jobhunter.domain.Company;
+import vn.hoidanit.jobhunter.domain.Role;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.response.ResCreateUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResUpdateUserDTO;
@@ -19,12 +20,13 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-
     private final CompanyService companyService;
+    private final RoleService roleService;
 
-    public UserService(UserRepository userRepository, CompanyService companyService) {
+    public UserService(UserRepository userRepository, CompanyService companyService, RoleService roleService) {
         this.userRepository = userRepository;
         this.companyService = companyService;
+        this.roleService = roleService;
     }
 
     public User handleCreateUser(User user) {
@@ -32,6 +34,12 @@ public class UserService {
         if (user.getCompany() != null) {
             Optional<Company> companyOptional = this.companyService.findById(user.getCompany().getId());
             user.setCompany(companyOptional.isPresent() ? companyOptional.get() : null );
+        }
+
+        // check role
+        if (user.getRole() != null) {
+            Role role = this.roleService.handleGetRoleById(user.getRole().getId());
+            user.setRole(role != null ? role : null);;
         }
         return this.userRepository.save(user);
     }
@@ -44,10 +52,17 @@ public class UserService {
             localUser.setAddress(reqUser.getAddress());
             localUser.setAge(reqUser.getAge());
 
+            // check company
             if (reqUser.getCompany() != null) {
                 Optional<Company> company = this.companyService.findById(reqUser.getCompany().getId());
                 localUser.setCompany(company.orElse(null));
             }
+            // check role
+            if (reqUser.getRole() != null) {
+                Role role = this.roleService.handleGetRoleById(reqUser.getRole().getId());
+                localUser.setRole(role != null ? role : null);
+            }
+
             //update
             localUser  =  this.userRepository.save(localUser);
         }
@@ -72,23 +87,11 @@ public class UserService {
 
         rs.setMeta(mt);
 
-        List<ResUserDTO> userDTOList = pageUser.getContent()
-                .stream().map(item -> new ResUserDTO(
-                    item.getId(),
-                    item.getName(),
-                    item.getEmail(),
-                    item.getGender(),
-                    item.getAddress(),
-                    item.getAge(),
-                    item.getCreatedAt(),
-                    item.getUpdatedAt(),
-                    new ResUserDTO.CompanyUser(
-                            item.getCompany() != null ? item.getCompany().getId() : 0,
-                            item.getCompany() != null ? item.getCompany().getName(): null
-                    )
-                )).collect(Collectors.toList());
+        List<ResUserDTO> listUser = pageUser.getContent()
+                .stream().map(item -> this.convertToResUserDTO(item))
+                .collect(Collectors.toList());
 
-        rs.setResult(userDTOList);
+        rs.setResult(listUser);
         return rs;
     }
 
@@ -128,11 +131,18 @@ public class UserService {
     public ResUserDTO convertToResUserDTO(User user) {
         ResUserDTO res = new ResUserDTO();
         ResUserDTO.CompanyUser company = new ResUserDTO.CompanyUser();
+        ResUserDTO.RoleUser role = new ResUserDTO.RoleUser();
 
         if (user.getCompany() != null) {
             company.setId(user.getCompany().getId());
             company.setName(user.getCompany().getName());
             res.setCompany(company);
+        }
+
+        if (user.getRole() != null) {
+            role.setId(user.getRole().getId());
+            role.setName(user.getRole().getName());
+            res.setRole(role);
         }
 
         res.setId(user.getId());
