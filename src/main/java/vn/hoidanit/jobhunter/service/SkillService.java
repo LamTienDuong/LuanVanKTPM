@@ -59,10 +59,12 @@ public class SkillService {
     public void handleDeleteSkill(long id) {
         // delete job inside job_skill table
         Optional<Skill> skillOptional = this.skillRepository.findById(id);
-        // Da kiem tra id ben controller nen khong phai kiem tra id co ton tai hay khong
         Skill currentSkill = skillOptional.get();
-        // Xoa skill nam trong danh sach cua job ( xoa skill ben cha )
         currentSkill.getJobs().forEach(job -> job.getSkills().remove(currentSkill));
+
+        // delete subscriber (inside subscriber_skill table)
+        currentSkill.getSubscribers().forEach(sub -> sub.getSkills().remove(currentSkill));
+
         // xoa skill ben con
         this.skillRepository.delete(currentSkill);
     }

@@ -26,10 +26,19 @@ public class Permission {
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
-
     @ManyToMany(mappedBy = "permissions", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Role> roles;
+
+    public Permission() {
+    }
+
+    public Permission(String name, String apiPath, String method, String module) {
+        this.name = name;
+        this.apiPath = apiPath;
+        this.method = method;
+        this.module = module;
+    }
 
     public long getId() {
         return id;

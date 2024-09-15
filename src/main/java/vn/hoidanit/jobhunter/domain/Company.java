@@ -128,4 +128,12 @@ public class Company {
     public void setUsers(List<User> users) {
         this.users = users;
     }
+
+    public List<Job> getJobs() {
+        return jobs;
+    }
+
+    public void setJobs(List<Job> jobs) {
+        this.jobs = jobs;
+    }
 }
