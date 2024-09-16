@@ -11,7 +11,7 @@ import vn.luanvan.ktpm.domain.Permission;
 import vn.luanvan.ktpm.domain.response.ResultPaginationDTO;
 import vn.luanvan.ktpm.service.PermissionService;
 import vn.luanvan.ktpm.util.annotation.ApiMessage;
-import vn.luanvan.ktpm.util.error.IdInvalidException;
+import vn.luanvan.ktpm.util.error.CustomizeException;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -24,10 +24,10 @@ public class PermissionController {
 
     @PostMapping("/permissions")
     @ApiMessage("Create a permission")
-    public ResponseEntity<Permission> createNewPermission(@Valid @RequestBody Permission permission) throws IdInvalidException {
+    public ResponseEntity<Permission> createNewPermission(@Valid @RequestBody Permission permission) throws CustomizeException {
         // check exist
         if (this.permissionService.isPermissionExist(permission)) {
-            throw new IdInvalidException("Permission da ton tai");
+            throw new CustomizeException("Permission da ton tai");
         }
         // create a new permission
 
@@ -38,16 +38,16 @@ public class PermissionController {
 
     @PutMapping("/permissions")
     @ApiMessage("Update a permission")
-    public ResponseEntity<Permission> updatePermission(@Valid @RequestBody Permission permission) throws IdInvalidException {
+    public ResponseEntity<Permission> updatePermission(@Valid @RequestBody Permission permission) throws CustomizeException {
         // check exist by id
         if (this.permissionService.handleGetPermissionById(permission.getId()) == null) {
-            throw new IdInvalidException("Permission voi id = " + permission.getId() + " khong ton tai");
+            throw new CustomizeException("Permission voi id = " + permission.getId() + " khong ton tai");
         }
 
         // check exist by module, apiPath and method
         if (this.permissionService.isPermissionExist(permission)) {
             if (this.permissionService.isSameName(permission)) {
-                throw new IdInvalidException("Permission da ton tai");
+                throw new CustomizeException("Permission da ton tai");
             }
         }
 
@@ -57,11 +57,11 @@ public class PermissionController {
 
     @DeleteMapping("/permissions/{id}")
     @ApiMessage("Delete a permission")
-    public ResponseEntity<Void> deletePermission(@PathVariable long id) throws IdInvalidException {
+    public ResponseEntity<Void> deletePermission(@PathVariable long id) throws CustomizeException {
         // check id exist
         Permission permission = this.permissionService.handleGetPermissionById(id);
         if (permission == null) {
-            throw new IdInvalidException("Permission void id = " + id + " khong ton tai");
+            throw new CustomizeException("Permission void id = " + id + " khong ton tai");
         }
 
         this.permissionService.handleDeletePermission(id);

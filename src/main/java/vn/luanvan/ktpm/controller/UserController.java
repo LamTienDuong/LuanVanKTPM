@@ -15,7 +15,7 @@ import vn.luanvan.ktpm.domain.response.ResultPaginationDTO;
 import vn.luanvan.ktpm.domain.response.ResCreateUserDTO;
 import vn.luanvan.ktpm.service.UserService;
 import vn.luanvan.ktpm.util.annotation.ApiMessage;
-import vn.luanvan.ktpm.util.error.IdInvalidException;
+import vn.luanvan.ktpm.util.error.CustomizeException;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -28,40 +28,12 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("users")
-    @ApiMessage("Create a new user")
-    public ResponseEntity<ResCreateUserDTO> createNewUser(@Valid @RequestBody User user) throws IdInvalidException {
-        boolean isEmailExist = this.userService.isEmailExist(user.getEmail());
-        if (isEmailExist) {
-            throw new IdInvalidException(
-                    "Email " + user.getEmail() + " da ton tai, vui long su dung email khac");
-        }
-
-        String hashPassword = this.passwordEncoder.encode(user.getPassword());
-        user.setPassword(hashPassword);
-        User localUser = userService.handleCreateUser(user);
-
-        ResCreateUserDTO resCreateUserDTO = this.userService.convertToResCreateUserDTO(localUser);
-        return ResponseEntity.status(HttpStatus.CREATED).body(resCreateUserDTO);
-    }
-
-    @PutMapping("users")
-    @ApiMessage("Update a user")
-    public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody User user) throws IdInvalidException {
-        User updateUser = this.userService.handleUpdateUser(user);
-        if (updateUser == null) {
-            throw new IdInvalidException("User voi id = " + user.getId() + " khong ton tai");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(this.userService.convertToResUpdateUserDTO(updateUser));
-    }
-
-
     @GetMapping("users/{id}")
     @ApiMessage("Fetch user by id")
-    public ResponseEntity<ResUserDTO> getUser(@PathVariable Long id) throws IdInvalidException  {
+    public ResponseEntity<ResUserDTO> getUser(@PathVariable Long id) throws CustomizeException  {
         User user = this.userService.handleGetUser(id);
         if (user == null) {
-            throw new IdInvalidException("User voi id = " + id + " khong ton tai");
+            throw new CustomizeException("User voi id = " + id + " khong ton tai");
         }
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.convertToResUserDTO(user));
     }
@@ -78,10 +50,10 @@ public class UserController {
 
     @DeleteMapping("users/{id}")
     @ApiMessage("Delete a user")
-    public ResponseEntity<Void> deleteUser(@PathVariable long id) throws IdInvalidException {
+    public ResponseEntity<Void> deleteUser(@PathVariable long id) throws CustomizeException {
         User user = this.userService.handleGetUser(id);
         if (user == null) {
-            throw new IdInvalidException(
+            throw new CustomizeException(
                     "User voi id = " + id + " khong ton tai"
             );
         }

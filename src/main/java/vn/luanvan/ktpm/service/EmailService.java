@@ -11,20 +11,17 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
-import vn.luanvan.ktpm.repository.JobRepository;
 
 import java.nio.charset.StandardCharsets;
 
 @Service
 public class EmailService {
-    private final JobRepository jobRepository;
     private final MailSender mailSender;
     private final JavaMailSender javaMailSender;
 
     private final SpringTemplateEngine templateEngine;
 
-    public EmailService(JobRepository jobRepository, MailSender mailSender, JavaMailSender javaMailSender, SpringTemplateEngine templateEngine) {
-        this.jobRepository = jobRepository;
+    public EmailService(MailSender mailSender, JavaMailSender javaMailSender, SpringTemplateEngine templateEngine) {
         this.mailSender = mailSender;
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;

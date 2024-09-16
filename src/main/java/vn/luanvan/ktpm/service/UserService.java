@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import vn.luanvan.ktpm.domain.Company;
 import vn.luanvan.ktpm.domain.Role;
 import vn.luanvan.ktpm.domain.User;
 import vn.luanvan.ktpm.domain.response.ResCreateUserDTO;
@@ -20,54 +19,16 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final CompanyService companyService;
     private final RoleService roleService;
 
-    public UserService(UserRepository userRepository, CompanyService companyService, RoleService roleService) {
+    public UserService(UserRepository userRepository, RoleService roleService) {
         this.userRepository = userRepository;
-        this.companyService = companyService;
         this.roleService = roleService;
     }
 
-    public User handleCreateUser(User user) {
-        // check company
-        if (user.getCompany() != null) {
-            Optional<Company> companyOptional = this.companyService.findById(user.getCompany().getId());
-            user.setCompany(companyOptional.isPresent() ? companyOptional.get() : null );
-        }
 
-        // check role
-        if (user.getRole() != null) {
-            Role role = this.roleService.handleGetRoleById(user.getRole().getId());
-            user.setRole(role != null ? role : null);;
-        }
-        return this.userRepository.save(user);
-    }
 
-    public User handleUpdateUser(User reqUser) {
-        User localUser = this.handleGetUser(reqUser.getId());
-        if (localUser != null) {
-            localUser.setName(reqUser.getName());
-            localUser.setGender(reqUser.getGender());
-            localUser.setAddress(reqUser.getAddress());
-            localUser.setAge(reqUser.getAge());
 
-            // check company
-            if (reqUser.getCompany() != null) {
-                Optional<Company> company = this.companyService.findById(reqUser.getCompany().getId());
-                localUser.setCompany(company.orElse(null));
-            }
-            // check role
-            if (reqUser.getRole() != null) {
-                Role role = this.roleService.handleGetRoleById(reqUser.getRole().getId());
-                localUser.setRole(role != null ? role : null);
-            }
-
-            //update
-            localUser  =  this.userRepository.save(localUser);
-        }
-        return localUser;
-    }
 
     public User handleGetUser(Long id) {
         Optional<User> userOptional = this.userRepository.findById(id);
@@ -115,15 +76,10 @@ public class UserService {
         resCreateUserDTO.setName(user.getName());
         resCreateUserDTO.setEmail(user.getEmail());
         resCreateUserDTO.setGender(user.getGender());
-        resCreateUserDTO.setAddress(user.getAddress());
-        resCreateUserDTO.setAge(user.getAge());
+//        resCreateUserDTO.setAddress(user.getAddress());
         resCreateUserDTO.setCreatedAt(user.getCreatedAt());
 
-        if (user.getCompany() != null) {
-            company.setId(user.getCompany().getId());
-            company.setName(user.getCompany().getName());
-            resCreateUserDTO.setCompany(company);
-        }
+
         return resCreateUserDTO;
     }
 
@@ -133,11 +89,7 @@ public class UserService {
         ResUserDTO.CompanyUser company = new ResUserDTO.CompanyUser();
         ResUserDTO.RoleUser role = new ResUserDTO.RoleUser();
 
-        if (user.getCompany() != null) {
-            company.setId(user.getCompany().getId());
-            company.setName(user.getCompany().getName());
-            res.setCompany(company);
-        }
+
 
         if (user.getRole() != null) {
             role.setId(user.getRole().getId());
@@ -149,8 +101,7 @@ public class UserService {
         res.setName(user.getName());
         res.setEmail(user.getEmail());
         res.setGender(user.getGender());
-        res.setAddress(user.getAddress());
-        res.setAge(user.getAge());
+//        res.setAddress(user.getAddress());
         res.setCreatedAt(user.getCreatedAt());
         res.setUpdatedAt(user.getUpdatedAt());
         return res;
@@ -160,17 +111,12 @@ public class UserService {
         ResUpdateUserDTO res = new ResUpdateUserDTO();
         ResUpdateUserDTO.CompanyUser company = new ResUpdateUserDTO.CompanyUser();
 
-        if (user.getCompany() != null) {
-            company.setId(user.getCompany().getId());
-            company.setName(user.getCompany().getName());
-            res.setCompany(company);
-        }
+
 
         res.setId(user.getId());
         res.setName(user.getName());
         res.setGender(user.getGender());
-        res.setAddress(user.getAddress());
-        res.setAge(user.getAge());
+//        res.setAddress(user.getAddress());
         res.setUpdatedAt(user.getUpdatedAt());
         return res;
     }

@@ -21,10 +21,12 @@ public class User {
     private String email;
     @NotBlank(message = "password khong duoc de trong")
     private String password;
-    private int age;
+    private Instant birthdate;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Address> address;
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;// MALE/FEMALE
-    private String address;
     @Column(columnDefinition = "MEDIUMTEXT")
     private String refreshToken;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
@@ -33,12 +35,6 @@ public class User {
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Resume> resumes;
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
@@ -75,12 +71,12 @@ public class User {
         this.password = password;
     }
 
-    public int getAge() {
-        return age;
+    public Instant getBirthdate() {
+        return birthdate;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setBirthdate(Instant birthdate) {
+        this.birthdate = birthdate;
     }
 
     public GenderEnum getGender() {
@@ -91,11 +87,11 @@ public class User {
         this.gender = gender;
     }
 
-    public String getAddress() {
+    public List<Address> getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(List<Address> address) {
         this.address = address;
     }
 
@@ -137,22 +133,6 @@ public class User {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-
-    public List<Resume> getResumes() {
-        return resumes;
-    }
-
-    public void setResumes(List<Resume> resumes) {
-        this.resumes = resumes;
     }
 
     public Role getRole() {

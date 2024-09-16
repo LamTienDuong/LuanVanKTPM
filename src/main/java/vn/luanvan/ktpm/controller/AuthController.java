@@ -20,7 +20,7 @@ import vn.luanvan.ktpm.domain.response.ResLoginDTO;
 import vn.luanvan.ktpm.service.UserService;
 import vn.luanvan.ktpm.util.SecurityUtil;
 import vn.luanvan.ktpm.util.annotation.ApiMessage;
-import vn.luanvan.ktpm.util.error.IdInvalidException;
+import vn.luanvan.ktpm.util.error.CustomizeException;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -112,9 +112,9 @@ public class AuthController {
     @ApiMessage("Get user by refresh token")
     public ResponseEntity<ResLoginDTO> getRefreshToken(
             @CookieValue(name = "refresh_token", defaultValue = "abc") String refresh_token
-    ) throws IdInvalidException {
+    ) throws CustomizeException {
         if (refresh_token.equals("abc")) {
-            throw new IdInvalidException("Yeu cau truyen len refresh token o cookie");
+            throw new CustomizeException("Yeu cau truyen len refresh token o cookie");
         }
 
         // check valid token
@@ -124,7 +124,7 @@ public class AuthController {
         // check user by token + email
         User currentUser = this.userService.getUserByRefreshTokenAndEmail(refresh_token, email);
         if (currentUser == null) {
-            throw new IdInvalidException("Refresh token khong hop le");
+            throw new CustomizeException("Refresh token khong hop le");
         }
 
         //
@@ -165,12 +165,12 @@ public class AuthController {
 
     @PostMapping("/auth/logout")
     @ApiMessage("Logout User")
-    public ResponseEntity<Void> logout() throws IdInvalidException {
+    public ResponseEntity<Void> logout() throws CustomizeException {
         String email = SecurityUtil.getCurrentUserLogin().isPresent() ?
                 SecurityUtil.getCurrentUserLogin().get() : "";
 
         if (email.isEmpty()) {
-            throw new IdInvalidException("Access Token khong hop le");
+            throw new CustomizeException("Access Token khong hop le");
         }
 
         // update refresh token = null
@@ -192,15 +192,15 @@ public class AuthController {
 
     @PostMapping("/auth/register")
     @ApiMessage("Register a new user")
-    public ResponseEntity<ResCreateUserDTO> register(@Valid @RequestBody User user) throws IdInvalidException {
+    public ResponseEntity<ResCreateUserDTO> register(@Valid @RequestBody User user) throws CustomizeException {
         boolean isEmailExist = this.userService.isEmailExist(user.getEmail());
         if (isEmailExist) {
-            throw new IdInvalidException("Email " + user.getEmail() + " da ton tai, vui long su dung email khac");
+            throw new CustomizeException("Email " + user.getEmail() + " da ton tai, vui long su dung email khac");
         }
 
         String hashPassword = this.passwordEncoder.encode(user.getPassword());
         user.setPassword(hashPassword);
-        User dbUser = this.userService.handleCreateUser(user);
-        return  ResponseEntity.status(HttpStatus.OK).body(this.userService.convertToResCreateUserDTO(dbUser));
+//        User dbUser = this.userService.handleCreateUser(user);
+        return  ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }

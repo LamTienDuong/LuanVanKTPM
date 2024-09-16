@@ -10,7 +10,7 @@ import vn.luanvan.ktpm.domain.Role;
 import vn.luanvan.ktpm.domain.response.ResultPaginationDTO;
 import vn.luanvan.ktpm.service.RoleService;
 import vn.luanvan.ktpm.util.annotation.ApiMessage;
-import vn.luanvan.ktpm.util.error.IdInvalidException;
+import vn.luanvan.ktpm.util.error.CustomizeException;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -23,10 +23,10 @@ public class RoleController {
 
     @PostMapping("/roles")
     @ApiMessage("Create a new role")
-    public ResponseEntity<Role> createNewRole(@RequestBody Role role) throws IdInvalidException {
+    public ResponseEntity<Role> createNewRole(@RequestBody Role role) throws CustomizeException {
         boolean isExistByName = this.roleService.isExistByName(role.getName());
         if (isExistByName) {
-            throw new IdInvalidException("Role voi name = " + role.getName() + " da ton tai");
+            throw new CustomizeException("Role voi name = " + role.getName() + " da ton tai");
         }
         Role currentRole = this.roleService.handleCreateRole(role);
         return ResponseEntity.status(HttpStatus.OK).body(currentRole);
@@ -35,11 +35,11 @@ public class RoleController {
 
     @PutMapping("/roles")
     @ApiMessage("Update a role")
-    public ResponseEntity<Role> updateRole(@RequestBody Role role) throws IdInvalidException {
+    public ResponseEntity<Role> updateRole(@RequestBody Role role) throws CustomizeException {
         // check id
         Role currentRole = this.roleService.handleGetRoleById(role.getId());
         if (currentRole == null) {
-            throw new IdInvalidException("Role voi id = " + role.getId() + " khong ton tai");
+            throw new CustomizeException("Role voi id = " + role.getId() + " khong ton tai");
         }
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -48,10 +48,10 @@ public class RoleController {
 
     @DeleteMapping("/roles/{id}")
     @ApiMessage("Delete a role")
-    public ResponseEntity<Void> deleteRole(@PathVariable long id) throws IdInvalidException {
+    public ResponseEntity<Void> deleteRole(@PathVariable long id) throws CustomizeException {
         Role role = this.roleService.handleGetRoleById(id);
         if (role == null) {
-            throw new IdInvalidException("Role voi id = " + id + " khong ton tai");
+            throw new CustomizeException("Role voi id = " + id + " khong ton tai");
         }
         this.roleService.handledeleteRole(id);
         return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -69,10 +69,10 @@ public class RoleController {
 
     @GetMapping("/roles/{id}")
     @ApiMessage("Get role by id")
-    public ResponseEntity<Role> getRoleById(@PathVariable long id) throws IdInvalidException {
+    public ResponseEntity<Role> getRoleById(@PathVariable long id) throws CustomizeException {
         Role role = this.roleService.handleGetRoleById(id);
         if (role == null) {
-            throw new IdInvalidException("Role voi id = " + id + " khong ton tai");
+            throw new CustomizeException("Role voi id = " + id + " khong ton tai");
         }
         return ResponseEntity.status(HttpStatus.OK).body(role);
     }

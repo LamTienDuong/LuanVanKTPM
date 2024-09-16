@@ -3,7 +3,6 @@ package vn.luanvan.ktpm.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
-import vn.luanvan.ktpm.domain.Company;
 import vn.luanvan.ktpm.domain.User;
 
 import java.util.List;
@@ -16,5 +15,5 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     User findByRefreshTokenAndEmail(String token, String email);
 
-    List<User> findByCompany(Company company);
+
 }
