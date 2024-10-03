@@ -58,4 +58,8 @@ public class CategoryService {
     public boolean isExistByName(String name) {
         return this.categoryRepository.existsByName(name);
     }
+
+    public Category findByName(String name) {
+        return this.categoryRepository.findByName(name);
+    }
 }

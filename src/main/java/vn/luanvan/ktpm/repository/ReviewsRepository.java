@@ -3,9 +3,8 @@ package vn.luanvan.ktpm.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
-import vn.luanvan.ktpm.domain.Product;
+import vn.luanvan.ktpm.domain.Reviews;
 
 @Repository
-public interface ProductRepository  extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
-    boolean existsByName(String name);
+public interface ReviewsRepository extends JpaRepository<Reviews, Long>, JpaSpecificationExecutor<Reviews> {
 }

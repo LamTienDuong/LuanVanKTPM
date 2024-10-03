@@ -3,14 +3,13 @@ package vn.luanvan.ktpm.domain;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "items")
-public class Item {
+@Table(name="silders")
+public class Slider {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private double price;
-    private int quantity;
+    private String name;
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "product_id")
+    private Product product;
 }

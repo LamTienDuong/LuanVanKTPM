@@ -12,7 +12,7 @@ public class StaticResourcesWebConfiguration
     private String baseURI;
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/storage/**")
+        registry.addResourceHandler("/images/**")
                 .addResourceLocations(baseURI);
     }
 }

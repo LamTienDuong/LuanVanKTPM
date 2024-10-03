@@ -1,6 +1,7 @@
 package vn.luanvan.ktpm.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "address")
@@ -8,6 +9,7 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotBlank(message = "name khong duoc de trong")
     private String name;
     private String phone;
     @ManyToOne

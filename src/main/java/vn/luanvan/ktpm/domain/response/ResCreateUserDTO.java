@@ -7,34 +7,9 @@ import java.time.Instant;
 public class ResCreateUserDTO {
     private long id;
     private String name;
+    private String phone;
     private String email;
     private GenderEnum gender;// MALE/FEMALE
-    private String address;
-    private int age;
-//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
-    private Instant createdAt;
-    private CompanyUser company;
-
-    public static class CompanyUser {
-        private long id;
-        private String name;
-
-        public long getId() {
-            return id;
-        }
-
-        public void setId(long id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-    }
 
     public long getId() {
         return id;
@@ -50,6 +25,14 @@ public class ResCreateUserDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getEmail() {
@@ -68,35 +51,4 @@ public class ResCreateUserDTO {
         this.gender = gender;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public CompanyUser getCompany() {
-        return company;
-    }
-
-    public void setCompany(CompanyUser company) {
-        this.company = company;
-    }
 }

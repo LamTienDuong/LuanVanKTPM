@@ -1,8 +1,14 @@
 package vn.luanvan.ktpm.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import vn.luanvan.ktpm.util.SecurityUtil;
+import vn.luanvan.ktpm.util.constant.SizeEnum;
 
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -10,18 +16,26 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotBlank(message = "name khong duoc de trong")
     private String name;
+    @NotNull(message = "price khong duoc de trong")
     private double price;
+    @NotNull(message = "quantity khong duoc de trong")
     private long quantity;
-    private String image;
+    private long sold;
+    private String thumbnail;
+    @ElementCollection
+    private List<String> slider;
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
     @ManyToOne
     @JoinColumn(name = "discount_id")
     private Discount discount;
-    @Column(columnDefinition = "MEDIUMTEXT")
-    private String description;
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Reviews> reviews;
+    private boolean isActive = true;
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
@@ -59,12 +73,44 @@ public class Product {
         this.quantity = quantity;
     }
 
-    public String getImage() {
-        return image;
+    public long getSold() {
+        return sold;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setSold(long sold) {
+        this.sold = sold;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public List<String> getSlider() {
+        return slider;
+    }
+
+    public void setSlider(List<String> slider) {
+        this.slider = slider;
+    }
+
+    public List<Reviews> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Reviews> reviews) {
+        this.reviews = reviews;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public Category getCategory() {
@@ -81,14 +127,6 @@ public class Product {
 
     public void setDiscount(Discount discount) {
         this.discount = discount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Instant getCreatedAt() {
@@ -121,5 +159,19 @@ public class Product {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    @PrePersist
+    public void handleBeforeCreate() {
+        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() ?
+                SecurityUtil.getCurrentUserLogin().get() : "";
+        this.createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void handleBeforeUpdate() {
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() ?
+                SecurityUtil.getCurrentUserLogin().get() : "";
+        this.updatedAt = Instant.now();
     }
 }

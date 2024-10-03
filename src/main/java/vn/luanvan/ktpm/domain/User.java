@@ -17,27 +17,29 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
+    private String avatar;
+    private String phone;
     @NotBlank(message = "email khong duoc de trong")
     private String email;
     @NotBlank(message = "password khong duoc de trong")
     private String password;
+    @Enumerated(EnumType.STRING)
+    private GenderEnum gender;// MALE/FEMALE
     private Instant birthdate;
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Address> address;
-    @Enumerated(EnumType.STRING)
-    private GenderEnum gender;// MALE/FEMALE
     @Column(columnDefinition = "MEDIUMTEXT")
     private String refreshToken;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
-    private Instant createdAt;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
-    private Instant updatedAt;
-    private String createdBy;
-    private String updatedBy;
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Reviews> reviews;
+    @OneToOne(mappedBy = "user")
+    @JsonIgnore
+    private Cart cart;
 
     public long getId() {
         return id;
@@ -55,6 +57,14 @@ public class User {
         this.name = name;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -69,6 +79,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public Instant getBirthdate() {
@@ -103,38 +121,6 @@ public class User {
         this.refreshToken = refreshToken;
     }
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
     public Role getRole() {
         return role;
     }
@@ -143,17 +129,5 @@ public class User {
         this.role = role;
     }
 
-    @PrePersist
-    public void handleBeforeCreate() {
-        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() ?
-            SecurityUtil.getCurrentUserLogin().get() : "";
-        this.createdAt = Instant.now();
-    }
 
-    @PreUpdate
-    public void handleBeforeUpdate() {
-        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() ?
-                SecurityUtil.getCurrentUserLogin().get() : "";
-        this.updatedAt = Instant.now();
-    }
 }

@@ -60,4 +60,24 @@ public class UserController {
         this.userService.handleDeleteUser(id);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
+
+    @PutMapping("users")
+    @ApiMessage("Update user")
+    public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody User user) throws CustomizeException {
+        User userDB = this.userService.handleGetUser(user.getId());
+        if (userDB == null) {
+            throw new CustomizeException(
+                    "User voi id = " + user.getId() + " khong ton tai"
+            );
+        }
+        userDB = this.userService.handleUpdateUser(user);
+        return ResponseEntity.status(HttpStatus.OK).body(this.userService.convertToResUpdateUserDTO(userDB));
+    }
+
+    @GetMapping("users/quantity")
+    @ApiMessage("Get count user")
+    public ResponseEntity<Long> getQuantityUser(@RequestParam String roleName) {
+        long quantity = this.userService.countUserByRoleName(roleName);
+        return ResponseEntity.status(HttpStatus.OK).body(quantity);
+    }
 }

@@ -197,10 +197,9 @@ public class AuthController {
         if (isEmailExist) {
             throw new CustomizeException("Email " + user.getEmail() + " da ton tai, vui long su dung email khac");
         }
-
         String hashPassword = this.passwordEncoder.encode(user.getPassword());
         user.setPassword(hashPassword);
-//        User dbUser = this.userService.handleCreateUser(user);
-        return  ResponseEntity.status(HttpStatus.OK).body(null);
+        User dbUser = this.userService.handleCreateUser(user);
+        return  ResponseEntity.status(HttpStatus.OK).body(this.userService.convertToResCreateUserDTO(dbUser));
     }
 }
