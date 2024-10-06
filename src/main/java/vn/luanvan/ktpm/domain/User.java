@@ -37,9 +37,6 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Reviews> reviews;
-    @OneToOne(mappedBy = "user")
-    @JsonIgnore
-    private Cart cart;
 
     public long getId() {
         return id;

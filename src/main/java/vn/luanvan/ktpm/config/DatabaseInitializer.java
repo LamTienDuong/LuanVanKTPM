@@ -37,6 +37,15 @@ public class DatabaseInitializer implements CommandLineRunner {
         long countPermissions = this.permissionRepository.count();
         long countRoles = this.roleRepository.count();
         long countUsers = this.userRepository.count();
+        long countCategory = this.categoryRepository.count();
+
+        if (countCategory == 0) {
+            ArrayList<Category> listCategory = new ArrayList<>();
+            listCategory.add(new Category("áo sơ mi dài tay"));
+            listCategory.add(new Category("áo sơ mi ngắn tay"));
+            listCategory.add(new Category("quần tây nam"));
+            this.categoryRepository.saveAll(listCategory);
+        }
 
         if (countPermissions == 0) {
             ArrayList<Permission> arr = new ArrayList<>();
