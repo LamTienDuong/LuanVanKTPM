@@ -17,6 +17,7 @@ public class Reviews {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    private String rate;
     @Column(columnDefinition = "MEDIUMTEXT")
     private String content;
     private Instant createdAt;
@@ -68,6 +69,14 @@ public class Reviews {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public String getRate() {
+        return rate;
+    }
+
+    public void setRate(String rate) {
+        this.rate = rate;
     }
 
     @PrePersist
