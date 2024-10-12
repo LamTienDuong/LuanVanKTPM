@@ -110,6 +110,14 @@ public class User {
         this.address = address;
     }
 
+    public List<Reviews> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Reviews> reviews) {
+        this.reviews = reviews;
+    }
+
     public String getRefreshToken() {
         return refreshToken;
     }

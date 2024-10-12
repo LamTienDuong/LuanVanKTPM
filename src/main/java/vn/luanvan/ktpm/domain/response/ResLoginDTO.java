@@ -1,7 +1,10 @@
 package vn.luanvan.ktpm.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import vn.luanvan.ktpm.domain.Address;
 import vn.luanvan.ktpm.domain.Role;
+
+import java.util.List;
 
 public class ResLoginDTO {
     @JsonProperty("access_token")
@@ -12,14 +15,19 @@ public class ResLoginDTO {
         private long id;
         private String email;
         private String name;
+        private String avatar;
+        private String phone;
         private Role role;
+        private List<Address> address;
 
         public UserLogin() {}
 
-        public UserLogin(long id, String email, String name, Role role) {
+        public UserLogin(long id, String email, String name, String avatar, String phone, Role role) {
             this.id = id;
             this.email = email;
             this.name = name;
+            this.avatar = avatar;
+            this.phone = phone;
             this.role = role;
         }
 
@@ -47,12 +55,36 @@ public class ResLoginDTO {
             this.name = name;
         }
 
+        public String getAvatar() {
+            return avatar;
+        }
+
+        public void setAvatar(String avatar) {
+            this.avatar = avatar;
+        }
+
+        public String getPhone() {
+            return phone;
+        }
+
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
+
         public Role getRole() {
             return role;
         }
 
         public void setRole(Role role) {
             this.role = role;
+        }
+
+        public List<Address> getAddress() {
+            return address;
+        }
+
+        public void setAddress(List<Address> address) {
+            this.address = address;
         }
     }
 

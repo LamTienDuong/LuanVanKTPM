@@ -52,7 +52,7 @@ public class AddressService {
 
         ResUpdateAddressDTO res = new ResUpdateAddressDTO();
         res.setId(addressDB.getId());
-        res.setName(addressDB.getName());
+//        res.setName(addressDB.getName());
         return res;
     }
 
@@ -63,18 +63,18 @@ public class AddressService {
     public List<ResAddressDTO> findByUser(User user) {
         List<Address> addressList = this.addressRepository.findByUser(user);
 
-        List<ResAddressDTO> res = addressList.stream()
-                .map(item -> new ResAddressDTO(item.getId(), item.getName(), item.getPhone(),
-                        new ResAddressDTO.AddressUser(item.getUser().getId(), item.getUser().getName())))
-                .collect(Collectors.toList());
+//        List<ResAddressDTO> res = addressList.stream()
+//                .map(item -> new ResAddressDTO(item.getId(), item.getName(), item.getPhone(),
+//                        new ResAddressDTO.AddressUser(item.getUser().getId(), item.getUser().getName())))
+//                .collect(Collectors.toList());
 
-        return res;
+        return null;
     }
 
     public ResAddressDTO convertToResAddressDTO(Address address) {
         ResAddressDTO res = new ResAddressDTO();
         res.setId(address.getId());
-        res.setName(address.getName());
+//        res.setName(address.getName());
         res.setPhone(address.getPhone());
         if (address.getUser() != null) {
             ResAddressDTO.AddressUser addressUser = new ResAddressDTO.AddressUser();

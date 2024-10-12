@@ -65,17 +65,14 @@ public class UserService {
         if (userDB != null) {
             userDB.setName(user.getName());
             userDB.setPhone(user.getPhone());
-            userDB.setGender(user.getGender());
-
-            if (user.getAddress() != null) {
-                List<Long> listId = user.getAddress().stream()
-                        .map(item -> item.getId()).collect(Collectors.toList());
-
-                List<Address> addressList = this.addressRepository.findByIdIn(listId);
-                userDB.setAddress(addressList);
-            }
-
-
+            userDB.setAvatar(user.getAvatar());
+//            if (user.getAddress() != null) {
+//                List<Long> listId = user.getAddress().stream()
+//                        .map(item -> item.getId()).collect(Collectors.toList());
+//
+//                List<Address> addressList = this.addressRepository.findByIdIn(listId);
+//                userDB.setAddress(addressList);
+//            }
             this.userRepository.save(userDB);
         }
         return userDB;
