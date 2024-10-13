@@ -55,12 +55,12 @@ public class AddressController {
 
     @PutMapping("/addresses")
     @ApiMessage("Update a address")
-    public ResponseEntity<ResUpdateAddressDTO> updateAddress(@RequestBody Address address) throws CustomizeException {
+    public ResponseEntity<Address> updateAddress(@RequestBody Address address) throws CustomizeException {
         Address addressDB = this.addressService.findById(address.getId());
         if (addressDB == null) {
             throw new CustomizeException("Address voi id = " + address.getId() + " khong ton tai");
         }
-        ResUpdateAddressDTO res = this.addressService.update(address);
+        Address res = this.addressService.update(address);
         return  ResponseEntity.status(HttpStatus.OK).body(res);
     }
 

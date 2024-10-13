@@ -47,13 +47,13 @@ public class AddressService {
         return addressOptional.orElse(null);
     }
 
-    public ResUpdateAddressDTO update(Address address) {
+    public Address update(Address address) {
         Address addressDB = this.addressRepository.save(address);
 
         ResUpdateAddressDTO res = new ResUpdateAddressDTO();
         res.setId(addressDB.getId());
-//        res.setName(addressDB.getName());
-        return res;
+
+        return null;
     }
 
     public void delete(long id) {
