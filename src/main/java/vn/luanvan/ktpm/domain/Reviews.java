@@ -1,5 +1,6 @@
 package vn.luanvan.ktpm.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import vn.luanvan.ktpm.util.SecurityUtil;
 
@@ -78,6 +79,7 @@ public class Reviews {
     public void setRate(String rate) {
         this.rate = rate;
     }
+
 
     @PrePersist
     public void handleBeforeCreate() {
