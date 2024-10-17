@@ -1,6 +1,7 @@
 package vn.luanvan.ktpm.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class Order {
     private double totalPrice;
     private long userId;
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "order" })
     private List<Item> items;
 
     public long getId() {
