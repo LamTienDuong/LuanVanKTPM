@@ -12,11 +12,14 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    private String code;
+    private String addressStore;
     private String name;
     private String phone;
     @Column(columnDefinition = "MEDIUMTEXT")
     private String address;
     private double totalPrice;
+    private String status;
     private long userId;
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "order" })
@@ -28,6 +31,14 @@ public class Order {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getName() {
@@ -68,6 +79,22 @@ public class Order {
 
     public void setItems(List<Item> items) {
         this.items = items;
+    }
+
+    public String getAddressStore() {
+        return addressStore;
+    }
+
+    public void setAddressStore(String addressStore) {
+        this.addressStore = addressStore;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public long getUserId() {
