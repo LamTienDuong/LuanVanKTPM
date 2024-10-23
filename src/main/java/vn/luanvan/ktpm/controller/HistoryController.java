@@ -1,9 +1,12 @@
 package vn.luanvan.ktpm.controller;
 
+import com.turkraft.springfilter.boot.Filter;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import vn.luanvan.ktpm.domain.Order;
 import vn.luanvan.ktpm.domain.User;
 import vn.luanvan.ktpm.domain.response.ResultPaginationDTO;
 import vn.luanvan.ktpm.service.OrderService;
@@ -25,13 +28,9 @@ public class HistoryController {
     @GetMapping("/history")
     @ApiMessage("Get all order bu use id")
     public ResponseEntity<ResultPaginationDTO> getOrderByUserId(
-            @RequestParam(required = false) Long id,
+            @Filter Specification<Order> spec,
             Pageable pageable) throws CustomizeException {
-        User user = this.userService.handleGetUser(id);
-        if (user == null) {
-            throw new CustomizeException("User voi id = " + id + " khong ton tai");
-        }
-        ResultPaginationDTO res = this.orderService.findOrderByUserId(id, pageable);
+        ResultPaginationDTO res = this.orderService.findAll(spec, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 }

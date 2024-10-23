@@ -1,9 +1,9 @@
 package vn.luanvan.ktpm.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
+import java.time.Instant;
 import java.util.List;
 
 @Entity
@@ -21,9 +21,11 @@ public class Order {
     private double totalPrice;
     private String status;
     private long userId;
+    private String payment;
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "order" })
     private List<Item> items;
+    private Instant createdAt;
 
     public long getId() {
         return id;
@@ -97,11 +99,32 @@ public class Order {
         this.status = status;
     }
 
+    public String getPayment() {
+        return payment;
+    }
+
+    public void setPayment(String payment) {
+        this.payment = payment;
+    }
+
     public long getUserId() {
         return userId;
     }
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    @PrePersist
+    public void handleBeforeCreate() {
+        this.createdAt = Instant.now();
     }
 }

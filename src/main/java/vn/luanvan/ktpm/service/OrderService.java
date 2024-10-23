@@ -1,8 +1,12 @@
 package vn.luanvan.ktpm.service;
 
+import com.turkraft.springfilter.converter.FilterSpecification;
+import com.turkraft.springfilter.parser.node.FilterNode;
+import com.turkraft.springfilter.parser.node.InputNode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.luanvan.ktpm.domain.Item;
 import vn.luanvan.ktpm.domain.Order;
@@ -60,13 +64,12 @@ public class OrderService {
         return new PageImpl<>(pagedList, pageable, total);
     }
 
-    public ResultPaginationDTO findOrderByUserId(long id, Pageable pageable) {
-        List<Order> orderList = this.orderRepository.findByUserId(id);
 
-        Page<Order> orderPage = this.convertListToPage(orderList, pageable);
-
+    public ResultPaginationDTO findAll(Specification<Order> spec, Pageable pageable) {
+        Page<Order> orderPage  = this.orderRepository.findAll(spec, pageable);
         ResultPaginationDTO res = new ResultPaginationDTO();
         ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
+
 
         mt.setPage(pageable.getPageNumber() + 1);
         mt.setPageSize(pageable.getPageSize());

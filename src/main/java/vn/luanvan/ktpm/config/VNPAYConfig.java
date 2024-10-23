@@ -1,83 +1,104 @@
 package vn.luanvan.ktpm.config;
 
-import jakarta.servlet.http.HttpServletRequest;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
+import org.springframework.context.annotation.Configuration;
+import vn.luanvan.ktpm.util.VNPayUtil;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Configuration
 public class VNPAYConfig {
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_Returnurl = "/vnpay-payment-return";
+    public static String vnp_ReturnUrl = "http://localhost:8080/api/v1/payment/vn-pay-callback";
     public static String vnp_TmnCode = "2SWH0PZU"; // kiểm tra email sau
-    public static String vnp_HashSecret = "E8EC65NH4L4EHAZOKMI15VUIFVHI61HB"; // khi đăng ký Test
+    public static String secretKey = "E8EC65NH4L4EHAZOKMI15VUIFVHI61HB"; // khi đăng ký Test
     public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
+    public static String vnp_Version = "2.1.0";
+    public static String vnp_Command = "pay";
+    public static String orderType = "other";
 
-
-    public static String hashAllFields(Map fields) {
-        List fieldNames = new ArrayList(fields.keySet());
-        Collections.sort(fieldNames);
-        StringBuilder sb = new StringBuilder();
-        Iterator itr = fieldNames.iterator();
-        while (itr.hasNext()) {
-            String fieldName = (String) itr.next();
-            String fieldValue = (String) fields.get(fieldName);
-            if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                sb.append(fieldName);
-                sb.append("=");
-                sb.append(fieldValue);
-            }
-            if (itr.hasNext()) {
-                sb.append("&");
-            }
-        }
-        return hmacSHA512(vnp_HashSecret,sb.toString());
+    public static String getVnp_PayUrl() {
+        return vnp_PayUrl;
     }
 
-    public static String hmacSHA512(final String key, final String data) {
-        try {
-
-            if (key == null || data == null) {
-                throw new NullPointerException();
-            }
-            final Mac hmac512 = Mac.getInstance("HmacSHA512");
-            byte[] hmacKeyBytes = key.getBytes();
-            final SecretKeySpec secretKey = new SecretKeySpec(hmacKeyBytes, "HmacSHA512");
-            hmac512.init(secretKey);
-            byte[] dataBytes = data.getBytes(StandardCharsets.UTF_8);
-            byte[] result = hmac512.doFinal(dataBytes);
-            StringBuilder sb = new StringBuilder(2 * result.length);
-            for (byte b : result) {
-                sb.append(String.format("%02x", b & 0xff));
-            }
-            return sb.toString();
-
-        } catch (Exception ex) {
-            return "";
-        }
+    public static void setVnp_PayUrl(String vnp_PayUrl) {
+        VNPAYConfig.vnp_PayUrl = vnp_PayUrl;
     }
 
-    public static String getIpAddress(HttpServletRequest request) {
-        String ipAdress;
-        try {
-            ipAdress = request.getHeader("X-FORWARDED-FOR");
-            if (ipAdress == null) {
-                ipAdress = request.getLocalAddr();
-            }
-        } catch (Exception e) {
-            ipAdress = "Invalid IP:" + e.getMessage();
-        }
-        return ipAdress;
+    public static String getVnp_ReturnUrl() {
+        return vnp_ReturnUrl;
     }
 
-    public static String getRandomNumber(int len) {
-        Random rnd = new Random();
-        String chars = "0123456789";
-        StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++) {
-            sb.append(chars.charAt(rnd.nextInt(chars.length())));
-        }
-        return sb.toString();
+    public static void setVnp_ReturnUrl(String vnp_ReturnUrl) {
+        VNPAYConfig.vnp_ReturnUrl = vnp_ReturnUrl;
     }
+
+    public static String getVnp_TmnCode() {
+        return vnp_TmnCode;
+    }
+
+    public static void setVnp_TmnCode(String vnp_TmnCode) {
+        VNPAYConfig.vnp_TmnCode = vnp_TmnCode;
+    }
+
+    public static String getSecretKey() {
+        return secretKey;
+    }
+
+    public static void setSecretKey(String secretKey) {
+        VNPAYConfig.secretKey = secretKey;
+    }
+
+    public static String getVnp_apiUrl() {
+        return vnp_apiUrl;
+    }
+
+    public static void setVnp_apiUrl(String vnp_apiUrl) {
+        VNPAYConfig.vnp_apiUrl = vnp_apiUrl;
+    }
+
+    public static String getVnp_Version() {
+        return vnp_Version;
+    }
+
+    public static void setVnp_Version(String vnp_Version) {
+        VNPAYConfig.vnp_Version = vnp_Version;
+    }
+
+    public static String getVnp_Command() {
+        return vnp_Command;
+    }
+
+    public static void setVnp_Command(String vnp_Command) {
+        VNPAYConfig.vnp_Command = vnp_Command;
+    }
+
+    public static String getOrderType() {
+        return orderType;
+    }
+
+    public static void setOrderType(String orderType) {
+        VNPAYConfig.orderType = orderType;
+    }
+
+    public Map<String, String> getVNPayConfig() {
+        Map<String, String> vnpParamsMap = new HashMap<>();
+        vnpParamsMap.put("vnp_Version", this.vnp_Version);
+        vnpParamsMap.put("vnp_Command", this.vnp_Command);
+        vnpParamsMap.put("vnp_TmnCode", this.vnp_TmnCode);
+        vnpParamsMap.put("vnp_CurrCode", "VND");
+        vnpParamsMap.put("vnp_TxnRef",  VNPayUtil.getRandomNumber(8));
+        vnpParamsMap.put("vnp_OrderInfo", "Thanh toan don hang:" +  VNPayUtil.getRandomNumber(8));
+        vnpParamsMap.put("vnp_OrderType", this.orderType);
+        vnpParamsMap.put("vnp_Locale", "vn");
+        vnpParamsMap.put("vnp_ReturnUrl", this.vnp_ReturnUrl);
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        String vnpCreateDate = formatter.format(calendar.getTime());
+        vnpParamsMap.put("vnp_CreateDate", vnpCreateDate);
+        calendar.add(Calendar.MINUTE, 15);
+        String vnp_ExpireDate = formatter.format(calendar.getTime());
+        vnpParamsMap.put("vnp_ExpireDate", vnp_ExpireDate);
+        return vnpParamsMap;
+    }
+
 }

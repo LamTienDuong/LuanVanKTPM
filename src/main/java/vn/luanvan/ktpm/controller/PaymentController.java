@@ -1,66 +1,41 @@
 package vn.luanvan.ktpm.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import vn.luanvan.ktpm.service.VNPAYService;
+import vn.luanvan.ktpm.domain.response.payment.VNPayResponse;
+import vn.luanvan.ktpm.service.PaymentService;
+
+import java.io.IOException;
 
 @RestController
+@RequestMapping("/api/v1")
 public class PaymentController {
-    private final VNPAYService vnPayService;
-    private static String Status = "No";
-
-    public PaymentController(VNPAYService vnPayService) {
-        this.vnPayService = vnPayService;
+    private final PaymentService paymentService;
+    public PaymentController(PaymentService paymentService) {
+        this.paymentService = paymentService;
+    }
+    @GetMapping("/vn-pay")
+    public ResponseEntity<VNPayResponse> pay(HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(paymentService.createVnPayPayment(request));
     }
 
-    @GetMapping( "/payment")
-    public String home(){
-        return "createOrder";
-    }
+    @GetMapping("/payment/vn-pay-callback")
+    public ResponseEntity<VNPayResponse> payCallbackHandler(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String status = request.getParameter("vnp_ResponseCode");
 
-    // Chuyển hướng người dùng đến cổng thanh toán VNPAY
-    @PostMapping("/payment/submitOrder")
-    public String submidOrder(@RequestParam("amount") int orderTotal,
-                              @RequestParam("orderInfo") String orderInfo,
-                              HttpServletRequest request){
-        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
-        Status = "processing";
-        return "redirect:" + vnpayUrl;
-    }
 
-    // Sau khi hoàn tất thanh toán, VNPAY sẽ chuyển hướng trình duyệt về URL này
-    @GetMapping("/vnpay-payment-return")
-    public String paymentCompleted(HttpServletRequest request, Model model){
-        int paymentStatus =vnPayService.orderReturn(request);
-        String orderInfo = request.getParameter("vnp_OrderInfo");
-        String paymentTime = request.getParameter("vnp_PayDate");
-        String transactionId = request.getParameter("vnp_TransactionNo");
-        String totalPrice = request.getParameter("vnp_Amount");
-
-        model.addAttribute("orderId", orderInfo);
-        model.addAttribute("totalPrice", totalPrice);
-        model.addAttribute("paymentTime", paymentTime);
-        model.addAttribute("transactionId", transactionId);
-        if (paymentStatus == 1) {
-            Status = "success";
+        if (status.equals("00")) {
+            response.sendRedirect("http://localhost:3000/order?status=success");
+            return ResponseEntity.status(HttpStatus.OK).body(new VNPayResponse("00", "Success", ""));
         } else {
-            Status = "fail";
+            response.sendRedirect("http://localhost:3000/order?status=failed");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        return paymentStatus == 1 ? "orderSuccess" : "orderFail";
     }
 
-    @GetMapping("/payment/status")
-    public String getStatus() {
-        return Status;
-    }
 
-    @PostMapping("/payment/status")
-    public String setStatus() {
-        Status = "No";
-        return Status;
-    }
 }

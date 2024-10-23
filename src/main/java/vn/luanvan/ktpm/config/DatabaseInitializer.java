@@ -72,7 +72,6 @@ public class DatabaseInitializer implements CommandLineRunner {
             adminRole.setDescription("Admin thì full permissions");
             adminRole.setActive(true);
             adminRole.setPermissions(allPermissions);
-
             this.roleRepository.save(adminRole);
         }
 
