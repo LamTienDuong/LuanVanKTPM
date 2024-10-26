@@ -50,4 +50,16 @@ public class OrderController {
     }
 
 
+    @PutMapping("/orders/status")
+    @ApiMessage("Update status order")
+    public ResponseEntity<Order> updateStatus(@RequestBody Order order) throws CustomizeException {
+        Order orderDB = this.orderService.findById(order.getId());
+        if(orderDB == null) {
+            throw new CustomizeException("Order voi id = " + order.getId()+ " khong ton tai");
+        }
+        orderDB = this.orderService.updateStatus(order);
+        return ResponseEntity.status(HttpStatus.OK).body(orderDB);
+    }
+
+
 }

@@ -81,4 +81,10 @@ public class OrderService {
 
         return res;
     }
+
+    public Order updateStatus(Order order) {
+        Order orderDB = this.findById(order.getId());
+        orderDB.setStatus(order.getStatus());
+        return this.orderRepository.save(orderDB);
+    }
 }
