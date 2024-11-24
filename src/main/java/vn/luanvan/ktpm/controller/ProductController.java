@@ -27,9 +27,9 @@ public class ProductController {
     public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) throws CustomizeException {
         boolean isExistByName = this.productService.existByName(product.getName());
 
-        if (isExistByName) {
-            throw new CustomizeException("Product voi name = " + product.getName() + " da ton tai");
-        }
+//        if (isExistByName) {
+//            throw new CustomizeException("Product voi name = " + product.getName() + " da ton tai");
+//        }
         Product productDB = this.productService.create(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(productDB);
     }

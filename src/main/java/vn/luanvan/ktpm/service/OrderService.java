@@ -10,10 +10,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.luanvan.ktpm.domain.Item;
 import vn.luanvan.ktpm.domain.Order;
+import vn.luanvan.ktpm.domain.Product;
 import vn.luanvan.ktpm.domain.response.ResultPaginationDTO;
 import vn.luanvan.ktpm.domain.response.reviews.ResReviewsDTO;
 import vn.luanvan.ktpm.repository.ItemRepository;
 import vn.luanvan.ktpm.repository.OrderRepository;
+import vn.luanvan.ktpm.repository.ProductRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,11 +25,13 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final ItemRepository itemRepository;
+    private final ProductRepository productRepository;
 
 
-    public OrderService(OrderRepository orderRepository, ItemRepository itemRepository) {
+    public OrderService(OrderRepository orderRepository, ItemRepository itemRepository, ProductRepository productRepository) {
         this.orderRepository = orderRepository;
         this.itemRepository = itemRepository;
+        this.productRepository = productRepository;
     }
 
     public Order create(Order order){
@@ -40,6 +44,14 @@ public class OrderService {
             ).collect(Collectors.toList());
 
             List<Item> itemListDB = this.itemRepository.findByIdIn(itemList);
+
+            List<Product> productList = itemListDB.stream().map(item -> {
+                Product product = item.getProduct();
+                product.setSold(item.getQuantity() + product.getSold());
+                return product; 
+            }).toList();
+
+            this.productRepository.saveAll(productList);
 
             itemListDB.forEach(item -> item.setOrder(order));
             this.itemRepository.saveAll(itemListDB);
