@@ -4,6 +4,7 @@ import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +54,7 @@ public class ProductController {
         ResultPaginationDTO res = this.productService.findAll(spec, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
+
 
     @PutMapping("/products")
     @ApiMessage("Update a product")

@@ -17,6 +17,7 @@ import vn.luanvan.ktpm.repository.ItemRepository;
 import vn.luanvan.ktpm.repository.OrderRepository;
 import vn.luanvan.ktpm.repository.ProductRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -92,6 +93,15 @@ public class OrderService {
         res.setResult(orderPage.getContent());
 
         return res;
+    }
+
+    public List<Order> findAllByMonth(String month, String year) {
+        return orderRepository.findAllByCreatedAtMonthAndYear(Integer.parseInt(month), Integer.parseInt(year));
+    }
+
+    public List<Order> getOrdersByDate(int day, int month, int year) {
+        LocalDate date = LocalDate.of(year, month, day);
+        return orderRepository.findAllByCreatedAt(date);
     }
 
     public Order updateStatus(Order order) {

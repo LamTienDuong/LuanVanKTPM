@@ -49,6 +49,37 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         if (countPermissions == 0) {
             ArrayList<Permission> arr = new ArrayList<>();
+            arr.add(new Permission("Create a address", "/api/v1/addresses", "POST", "ADDRESSES"));
+            arr.add(new Permission("Update a address", "/api/v1/addresses", "PUT", "ADDRESSES"));
+            arr.add(new Permission("Delete a address", "/api/v1/addresses/{id}", "DELETE", "ADDRESSES"));
+            arr.add(new Permission("Get a address by id", "/api/v1/addresses/{id}", "GET", "ADDRESSES"));
+            arr.add(new Permission("Get address with pagination", "/api/v1/addresses", "GET", "ADDRESSES"));
+
+            arr.add(new Permission("Create a category", "/api/v1/categories", "POST", "CATEGORIES"));
+            arr.add(new Permission("Update a category", "/api/v1/categories", "PUT", "CATEGORIES"));
+            arr.add(new Permission("Delete a category", "/api/v1/categories/{id}", "DELETE", "CATEGORIES"));
+            arr.add(new Permission("Get a category by id", "/api/v1/categories/{id}", "GET", "CATEGORIES"));
+            arr.add(new Permission("Get category with pagination", "/api/v1/categories", "GET", "CATEGORIES"));
+
+            arr.add(new Permission("Create a history", "/api/v1/history", "POST", "HISTORY"));
+            arr.add(new Permission("Update a history", "/api/v1/history", "PUT", "HISTORY"));
+            arr.add(new Permission("Delete a history", "/api/v1/history/{id}", "DELETE", "HISTORY"));
+            arr.add(new Permission("Get a history by id", "/api/v1/history/{id}", "GET", "HISTORY"));
+            arr.add(new Permission("Get history with pagination", "/api/v1/history", "GET", "HISTORY"));
+
+            arr.add(new Permission("Create a item", "/api/v1/items", "POST", "ITEMS"));
+            arr.add(new Permission("Update a item", "/api/v1/items", "PUT", "ITEMS"));
+            arr.add(new Permission("Delete a item", "/api/v1/items/{id}", "DELETE", "ITEMS"));
+            arr.add(new Permission("Get a item by id", "/api/v1/items/{id}", "GET", "ITEMS"));
+            arr.add(new Permission("Get item with pagination", "/api/v1/items", "GET", "ITEMS"));
+
+            arr.add(new Permission("Create a order", "/api/v1/orders", "POST", "ORDERS"));
+            arr.add(new Permission("Update a order", "/api/v1/orders/status", "PUT", "ORDERS"));
+            arr.add(new Permission("Delete a order", "/api/v1/orders/{id}", "DELETE", "ORDERS"));
+            arr.add(new Permission("Get a order by id", "/api/v1/orders/{id}", "GET", "ORDERS"));
+            arr.add(new Permission("Get order with pagination", "/api/v1/orders", "GET", "ORDERS"));
+
+
             arr.add(new Permission("Create a product", "/api/v1/products", "POST", "PRODUCTS"));
             arr.add(new Permission("Update a product", "/api/v1/products", "PUT", "PRODUCTS"));
             arr.add(new Permission("Delete a product", "/api/v1/products/{id}", "DELETE", "PRODUCTS"));
@@ -68,26 +99,47 @@ public class DatabaseInitializer implements CommandLineRunner {
             List<Permission> allPermissions = this.permissionRepository.findAll();
 
             Role adminRole = new Role();
-            adminRole.setName("SUPER_ADMIN");
+            adminRole.setName("ADMIN");
             adminRole.setDescription("Admin thì full permissions");
             adminRole.setActive(true);
             adminRole.setPermissions(allPermissions);
             this.roleRepository.save(adminRole);
+
+            Role userRole = new Role();
+            userRole.setName("USER");
+            userRole.setDescription("User là khách hàng");
+            userRole.setActive(true);
+            userRole.setPermissions(allPermissions);
+            this.roleRepository.save(userRole);
         }
 
         if (countUsers == 0) {
             User adminUser = new User();
             adminUser.setEmail("admin@gmail.com");
             adminUser.setGender(GenderEnum.MALE);
-            adminUser.setName("I'm super admin");
-            adminUser.setPassword(this.passwordEncoder.encode("123456"));
+            adminUser.setName("Quản trị viên");
+            adminUser.setPassword(this.passwordEncoder.encode("Abcd1234"));
 
-            Role adminRole = this.roleRepository.findByName("SUPER_ADMIN");
+            Role adminRole = this.roleRepository.findByName("ADMIN");
             if (adminRole != null) {
                 adminUser.setRole(adminRole);
             }
-
+            // tao tai khoan admin
             this.userRepository.save(adminUser);
+
+
+            User user = new User();
+            user.setEmail("nguyenvana@gmail.com");
+            user.setGender(GenderEnum.MALE);
+            user.setName("Nguyen Van A");
+            user.setPassword(this.passwordEncoder.encode("Abcd1234"));
+
+            Role userRole = this.roleRepository.findByName("USER");
+            if (userRole != null) {
+                user.setRole(userRole);
+            }
+            // tao tai khoan user
+            this.userRepository.save(user);
         }
 
         if (countPermissions > 0 && countRoles > 0 && countUsers > 0) {

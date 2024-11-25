@@ -51,7 +51,7 @@ public class SecurityConfiguration {
                         authz -> authz
                                         .requestMatchers(whiteList).permitAll()
                                         .requestMatchers(HttpMethod.GET, "/api/v1/products").permitAll()
-                                        .anyRequest().permitAll())
+                                        .anyRequest().authenticated())
                 // anyRequest().authenticated()
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
                         .authenticationEntryPoint(customAuthenticationEntryPoint))

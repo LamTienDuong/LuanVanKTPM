@@ -13,6 +13,8 @@ import vn.luanvan.ktpm.service.OrderService;
 import vn.luanvan.ktpm.util.annotation.ApiMessage;
 import vn.luanvan.ktpm.util.error.CustomizeException;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1")
 public class OrderController {
@@ -47,6 +49,26 @@ public class OrderController {
             ) {
         ResultPaginationDTO res = this.orderService.findAll(spec, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+
+    @GetMapping("/orders/month")
+    @ApiMessage("Get all orders")
+    public ResponseEntity<List<Order>> findAllByMonth(
+            @RequestParam String month,
+            @RequestParam String year
+    ) {
+        List<Order> orderList = orderService.findAllByMonth(month, year);
+        return ResponseEntity.status(HttpStatus.OK).body(orderList);
+    }
+
+    @GetMapping("/orders/day")
+    public ResponseEntity<List<Order>> getOrdersInDay(
+            @RequestParam Integer day,
+            @RequestParam Integer month,
+            @RequestParam Integer year
+    ) {
+        List<Order> orderList = orderService.getOrdersByDate(day, month, year);
+        return ResponseEntity.status(HttpStatus.OK).body(orderList);
     }
 
 

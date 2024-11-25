@@ -26,7 +26,7 @@ public class HistoryController {
     }
 
     @GetMapping("/history")
-    @ApiMessage("Get all order bu use id")
+    @ApiMessage("Get all order by use id")
     public ResponseEntity<ResultPaginationDTO> getOrderByUserId(
             @Filter Specification<Order> spec,
             Pageable pageable) throws CustomizeException {
