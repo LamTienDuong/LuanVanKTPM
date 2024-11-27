@@ -18,17 +18,19 @@ public class ResLoginDTO {
         private String avatar;
         private String phone;
         private Role role;
+        private boolean active;
         private List<Address> address;
 
         public UserLogin() {}
 
-        public UserLogin(long id, String email, String name, String avatar, String phone, Role role) {
+        public UserLogin(long id, String email, String name, String avatar, String phone, Role role, boolean active) {
             this.id = id;
             this.email = email;
             this.name = name;
             this.avatar = avatar;
             this.phone = phone;
             this.role = role;
+            this.active = active;
         }
 
         public long getId() {
@@ -85,6 +87,14 @@ public class ResLoginDTO {
 
         public void setAddress(List<Address> address) {
             this.address = address;
+        }
+
+        public boolean isActive() {
+            return active;
+        }
+
+        public void setActive(boolean active) {
+            this.active = active;
         }
     }
 

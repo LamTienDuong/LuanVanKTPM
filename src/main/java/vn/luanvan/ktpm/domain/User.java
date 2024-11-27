@@ -25,7 +25,7 @@ public class User {
     private String password;
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;// MALE/FEMALE
-    private Instant birthdate;
+    private boolean active;
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Address> address;
@@ -86,12 +86,12 @@ public class User {
         this.phone = phone;
     }
 
-    public Instant getBirthdate() {
-        return birthdate;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setBirthdate(Instant birthdate) {
-        this.birthdate = birthdate;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public GenderEnum getGender() {

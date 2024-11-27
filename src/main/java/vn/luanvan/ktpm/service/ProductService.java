@@ -43,17 +43,19 @@ public class ProductService {
         ResultPaginationDTO res = new ResultPaginationDTO();
         ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
 
+        List<Product> productList = productPage.getContent().stream().filter(
+                Product::isActive
+        ).collect(Collectors.toList());
+
         mt.setPage(pageable.getPageNumber() + 1);
         mt.setPageSize(pageable.getPageSize());
         mt.setPages(productPage.getTotalPages());
-        mt.setTotal(productPage.getTotalElements());
+        mt.setTotal(productList.size());
 
         res.setMeta(mt);
 
-//        List<Product> productList = productPage.getContent().stream().filter(
-//                Product::isActive
-//        ).collect(Collectors.toList());
-        res.setResult(productPage.getContent());
+
+        res.setResult(productList);
         return res;
     }
 
@@ -89,6 +91,15 @@ public class ProductService {
 
     public boolean existByName(String name) {
         return this.productRepository.existsByName(name);
+    }
+
+    public int countProductByCategory(Category category) {
+        Optional<Category> categoryDB = this.categoryRepository.findById(category.getId());
+        return this.productRepository.countByCategory(categoryDB.get());
+    }
+
+    public long countProduct() {
+        return this.productRepository.count();
     }
 
 }

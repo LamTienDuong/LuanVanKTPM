@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import vn.luanvan.ktpm.domain.Category;
 import vn.luanvan.ktpm.domain.Product;
 import vn.luanvan.ktpm.domain.response.ResultPaginationDTO;
 import vn.luanvan.ktpm.service.ProductService;
@@ -53,6 +54,19 @@ public class ProductController {
     ) {
         ResultPaginationDTO res = this.productService.findAll(spec, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+
+
+    @GetMapping("/products/category")
+    @ApiMessage("Get a product")
+    public Integer findProductByCategory(@RequestBody Category category) throws CustomizeException {
+        return this.productService.countProductByCategory(category);
+    }
+
+    @GetMapping("/products/quantity")
+    @ApiMessage("count products")
+    public long countProduct() throws CustomizeException {
+        return this.productService.countProduct();
     }
 
 

@@ -61,7 +61,9 @@ public class AuthController {
                     currentUserDB.getName(),
                     currentUserDB.getAvatar(),
                     currentUserDB.getPhone(),
-                    currentUserDB.getRole()
+                    currentUserDB.getRole(),
+                    currentUserDB.isActive()
+
             );
             res.setUser(userLogin);
         }
@@ -106,6 +108,7 @@ public class AuthController {
             userLogin.setPhone(currentUserDB.getPhone());
             userLogin.setRole(currentUserDB.getRole());
             userLogin.setAddress(currentUserDB.getAddress());
+            userLogin.setActive(currentUserDB.isActive());
 
             userGetAccount.setUser(userLogin);
         }
@@ -142,7 +145,8 @@ public class AuthController {
                     currentUserDB.getName(),
                     currentUserDB.getAvatar(),
                     currentUserDB.getPhone(),
-                    currentUserDB.getRole()
+                    currentUserDB.getRole(),
+                    currentUser.isActive()
             );
             res.setUser(userLogin);
         }
@@ -206,6 +210,7 @@ public class AuthController {
         }
         String hashPassword = this.passwordEncoder.encode(user.getPassword());
         user.setPassword(hashPassword);
+        user.setActive(true);
         User dbUser = this.userService.handleCreateUser(user);
         return  ResponseEntity.status(HttpStatus.OK).body(this.userService.convertToResCreateUserDTO(dbUser));
     }

@@ -41,6 +41,12 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(order);
     }
 
+    @GetMapping("/orders/quantity")
+    @ApiMessage("Count order by status")
+    public long countProductByStatus(@RequestParam String status) throws CustomizeException {
+        return this.orderService.countByStatus(status);
+    }
+
     @GetMapping("/orders")
     @ApiMessage("Get all orders")
     public ResponseEntity<ResultPaginationDTO> findAll(
@@ -65,9 +71,10 @@ public class OrderController {
     public ResponseEntity<List<Order>> getOrdersInDay(
             @RequestParam Integer day,
             @RequestParam Integer month,
-            @RequestParam Integer year
+            @RequestParam Integer year,
+            @RequestParam Integer minus
     ) {
-        List<Order> orderList = orderService.getOrdersByDate(day, month, year);
+        List<Order> orderList = orderService.getOrdersByDate(day, month, year, minus);
         return ResponseEntity.status(HttpStatus.OK).body(orderList);
     }
 

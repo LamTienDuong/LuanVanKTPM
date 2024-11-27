@@ -1,6 +1,7 @@
 package vn.luanvan.ktpm.domain.response;
 
 import vn.luanvan.ktpm.domain.Address;
+import vn.luanvan.ktpm.domain.Role;
 import vn.luanvan.ktpm.util.constant.GenderEnum;
 
 import java.time.Instant;
@@ -12,7 +13,14 @@ public class ResUserDTO {
     private String phone;
     private String email;
     private GenderEnum gender;
+    private Role role;
     private List<Address> addressList;
+
+    private boolean active;
+
+    public ResUserDTO() {
+    }
+
 
     public long getId() {
         return id;
@@ -54,11 +62,27 @@ public class ResUserDTO {
         this.gender = gender;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     public List<Address> getAddressList() {
         return addressList;
     }
 
     public void setAddressList(List<Address> addressList) {
         this.addressList = addressList;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

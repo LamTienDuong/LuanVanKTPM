@@ -44,17 +44,24 @@ public class UserService {
         ResultPaginationDTO rs = new ResultPaginationDTO();
         ResultPaginationDTO.Meta mt =  new ResultPaginationDTO.Meta();
 
+        List<User> userList = pageUser.getContent()
+                .stream().filter(user -> user.getRole().getName().equals("USER"))
+                .collect(Collectors.toList());
+
         mt.setPage(pageable.getPageNumber() + 1);
         mt.setPageSize(pageable.getPageSize());
 
         mt.setPages(pageUser.getTotalPages());
-        mt.setTotal(pageUser.getTotalElements());
+        mt.setTotal(userList.size());
 
         rs.setMeta(mt);
 
-        List<ResUserDTO> listUser = pageUser.getContent()
-                .stream().map(item -> this.convertToResUserDTO(item))
+
+
+        List<ResUserDTO> listUser = userList.stream()
+                .map(item -> this.convertToResUserDTO(item))
                 .collect(Collectors.toList());
+
 
         rs.setResult(listUser);
         return rs;
@@ -73,6 +80,16 @@ public class UserService {
 //                List<Address> addressList = this.addressRepository.findByIdIn(listId);
 //                userDB.setAddress(addressList);
 //            }
+            this.userRepository.save(userDB);
+        }
+        return userDB;
+    }
+
+    public User handleUpdateUserFromAdmin(User user) {
+        User userDB = this.handleGetUser(user.getId());
+        if (userDB != null) {
+            userDB.setActive(user.isActive());
+
             this.userRepository.save(userDB);
         }
         return userDB;
@@ -111,11 +128,12 @@ public class UserService {
         res.setName(user.getName());
         res.setPhone(user.getPhone());
         res.setEmail(user.getEmail());
-        res.setGender(user.getGender());
-        if (user.getAddress() != null) {
-            List<Address> addressList = user.getAddress();
-            res.setAddressList(addressList);
-        }
+        res.setRole(user.getRole());
+        res.setActive(user.isActive());
+//        if (user.getAddress() != null) {
+//            List<Address> addressList = user.getAddress();
+//            res.setAddressList(addressList);
+//        }
 
         return res;
     }

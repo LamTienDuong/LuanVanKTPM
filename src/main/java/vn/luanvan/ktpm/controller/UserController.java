@@ -28,7 +28,7 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @GetMapping("users/{id}")
+    @GetMapping("/users/{id}")
     @ApiMessage("Fetch user by id")
     public ResponseEntity<ResUserDTO> getUser(@PathVariable Long id) throws CustomizeException  {
         User user = this.userService.handleGetUser(id);
@@ -38,7 +38,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.convertToResUserDTO(user));
     }
 
-    @GetMapping("users")
+    @GetMapping("/users")
     @ApiMessage("Fetch all user")
     public ResponseEntity<ResultPaginationDTO>  getAllUser(
             @Filter Specification<User> spec,
@@ -48,7 +48,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(resultPaginationDTO);
     }
 
-    @DeleteMapping("users/{id}")
+    @DeleteMapping("/users/{id}")
     @ApiMessage("Delete a user")
     public ResponseEntity<Void> deleteUser(@PathVariable long id) throws CustomizeException {
         User user = this.userService.handleGetUser(id);
@@ -61,7 +61,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
-    @PutMapping("users")
+    @PutMapping("/users")
     @ApiMessage("Update user")
     public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody User user) throws CustomizeException {
         User userDB = this.userService.handleGetUser(user.getId());
@@ -74,7 +74,20 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.convertToResUpdateUserDTO(userDB));
     }
 
-    @GetMapping("users/quantity")
+    @PutMapping("/users/admin")
+    @ApiMessage("Update user")
+    public ResponseEntity<ResUpdateUserDTO> updateUserFromAdmin(@RequestBody User user) throws CustomizeException {
+        User userDB = this.userService.handleGetUser(user.getId());
+        if (userDB == null) {
+            throw new CustomizeException(
+                    "User voi id = " + user.getId() + " khong ton tai"
+            );
+        }
+        userDB = this.userService.handleUpdateUserFromAdmin(user);
+        return ResponseEntity.status(HttpStatus.OK).body(this.userService.convertToResUpdateUserDTO(userDB));
+    }
+
+    @GetMapping("/users/quantity")
     @ApiMessage("Get count user")
     public ResponseEntity<Long> getQuantityUser(@RequestParam String roleName) {
         long quantity = this.userService.countUserByRoleName(roleName);

@@ -14,6 +14,8 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
     List<Order> findByUserIdAndStatus(long id, String status);
 
+    long countByStatus(String status);
+
     @Query("SELECT o FROM Order o WHERE FUNCTION('MONTH', o.createdAt) = :month AND FUNCTION('YEAR', o.createdAt) = :year")
     List<Order> findAllByCreatedAtMonthAndYear(@Param("month") int month, @Param("year") int year);
 

@@ -41,9 +41,9 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         if (countCategory == 0) {
             ArrayList<Category> listCategory = new ArrayList<>();
-            listCategory.add(new Category("áo sơ mi dài tay"));
-            listCategory.add(new Category("áo sơ mi ngắn tay"));
-            listCategory.add(new Category("quần tây nam"));
+            listCategory.add(new Category("áo sơ mi nam"));
+            listCategory.add(new Category("áo khoác nam"));
+            listCategory.add(new Category("quần dài nam"));
             this.categoryRepository.saveAll(listCategory);
         }
 
@@ -116,8 +116,9 @@ public class DatabaseInitializer implements CommandLineRunner {
         if (countUsers == 0) {
             User adminUser = new User();
             adminUser.setEmail("admin@gmail.com");
-            adminUser.setGender(GenderEnum.MALE);
             adminUser.setName("Quản trị viên");
+            adminUser.setActive(true);
+            adminUser.setAvatar("avatar.jpg");
             adminUser.setPassword(this.passwordEncoder.encode("Abcd1234"));
 
             Role adminRole = this.roleRepository.findByName("ADMIN");
@@ -129,9 +130,10 @@ public class DatabaseInitializer implements CommandLineRunner {
 
 
             User user = new User();
-            user.setEmail("nguyenvana@gmail.com");
-            user.setGender(GenderEnum.MALE);
-            user.setName("Nguyen Van A");
+            user.setEmail("duong@gmail.com");
+            user.setName("Lam Tien Duong");
+            user.setActive(true);
+            user.setAvatar("avatar.jpg");
             user.setPassword(this.passwordEncoder.encode("Abcd1234"));
 
             Role userRole = this.roleRepository.findByName("USER");

@@ -42,7 +42,7 @@ public class SecurityConfiguration {
         String[] whiteList = {
                 "/",
                 "/api/v1/auth/login", "/api/v1/auth/refresh", "/images/**",
-                "/api/v1/auth/register", "/api/v1/email/**"
+                "/api/v1/auth/register", "/api/v1/email/**", "/api/v1/payment/vn-pay-callback/**"
         };
         http
                 .csrf(c -> c.disable())

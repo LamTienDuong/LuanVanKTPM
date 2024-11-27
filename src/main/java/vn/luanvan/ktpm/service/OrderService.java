@@ -19,6 +19,7 @@ import vn.luanvan.ktpm.repository.ProductRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -68,6 +69,10 @@ public class OrderService {
         return orderOptional.orElse(null);
     }
 
+    public long countByStatus(String status) {
+        return this.orderRepository.countByStatus(status);
+    }
+
     public Page<Order> convertListToPage(List<Order> list, Pageable pageable) {
         int total = list.size();
         int start = Math.toIntExact(pageable.getOffset());
@@ -99,9 +104,12 @@ public class OrderService {
         return orderRepository.findAllByCreatedAtMonthAndYear(Integer.parseInt(month), Integer.parseInt(year));
     }
 
-    public List<Order> getOrdersByDate(int day, int month, int year) {
+    public List<Order> getOrdersByDate(int day, int month, int year, int minus) {
         LocalDate date = LocalDate.of(year, month, day);
-        return orderRepository.findAllByCreatedAt(date);
+        LocalDate newDate = date.minusDays(minus);
+        List<Order> orderList = orderRepository.findAllByCreatedAt(newDate);
+        orderList = orderList.stream().filter(item -> Objects.equals(item.getStatus(), "Hoàn thành")).toList();
+        return orderList;
     }
 
     public Order updateStatus(Order order) {
