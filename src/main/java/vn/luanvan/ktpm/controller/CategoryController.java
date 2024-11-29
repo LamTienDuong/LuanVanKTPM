@@ -26,9 +26,9 @@ public class CategoryController {
     @ApiMessage("Create a new category")
     public ResponseEntity<Category> createNewCategory(@Valid @RequestBody Category category) throws CustomizeException {
         boolean isExistByName = this.categoryService.isExistByName(category.getName());
-        if (isExistByName) {
-            throw new CustomizeException("Category voi name = " + category.getName() + " đã tồn tại");
-        }
+//        if (isExistByName) {
+//            throw new CustomizeException("Category voi name = " + category.getName() + " đã tồn tại");
+//        }
         Category categoryDB = this.categoryService.create(category);
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryDB);
     }
@@ -62,7 +62,7 @@ public class CategoryController {
 
         boolean isExistByName = this.categoryService.isExistByName(category.getName());
         if (isExistByName) {
-            throw new CustomizeException("Category voi name = " + category.getName() + " đã tồn tại");
+            throw new CustomizeException("Category với name = " + category.getName() + " đã tồn tại");
         }
 
         categoryDB = this.categoryService.update(category);

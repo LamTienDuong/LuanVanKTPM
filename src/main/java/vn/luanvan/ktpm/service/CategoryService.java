@@ -48,6 +48,7 @@ public class CategoryService {
         Category categoryDB = this.findById(category.getId());
         if (category != null) {
             categoryDB.setName(category.getName());
+            this.categoryRepository.save(categoryDB);
         }
         return categoryDB;
     }

@@ -56,6 +56,16 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
+    @GetMapping("/products/active")
+    @ApiMessage("Get all products")
+    public ResponseEntity<ResultPaginationDTO> findAllIsActive(
+            @Filter Specification<Product> spec,
+            Pageable pageable
+    ) {
+        ResultPaginationDTO res = this.productService.findAllIsActive(spec, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+
 
     @GetMapping("/products/category")
     @ApiMessage("Get a product")

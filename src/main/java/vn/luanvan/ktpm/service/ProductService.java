@@ -43,6 +43,25 @@ public class ProductService {
         ResultPaginationDTO res = new ResultPaginationDTO();
         ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
 
+        mt.setPage(pageable.getPageNumber() + 1);
+        mt.setPageSize(pageable.getPageSize());
+        mt.setPages(productPage.getTotalPages());
+        mt.setTotal(productPage.getTotalElements());
+
+        res.setMeta(mt);
+
+//        List<Product> productList = productPage.getContent().stream().filter(
+//                Product::isActive
+//        ).collect(Collectors.toList());
+        res.setResult(productPage.getContent());
+        return res;
+    }
+
+    public ResultPaginationDTO findAllIsActive(Specification<Product> spec, Pageable pageable) {
+        Page<Product> productPage = this.productRepository.findAll(spec, pageable);
+        ResultPaginationDTO res = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
+
         List<Product> productList = productPage.getContent().stream().filter(
                 Product::isActive
         ).collect(Collectors.toList());
